@@ -1,10 +1,10 @@
 import { createApp } from "./app";
+import { connectDB } from "./config/db";
 import { env } from "./config/env";
-import { connectMongo } from "./config/mongo";
 import { ensureDefaultAdmin } from "./utils/seed";
 
 const start = async () => {
-  await connectMongo();
+  await connectDB();
   await ensureDefaultAdmin();
   const app = createApp();
   app.listen(env.port, () => {

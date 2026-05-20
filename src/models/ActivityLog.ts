@@ -1,22 +1,27 @@
-import { Schema, model, Document } from "mongoose";
+import { db } from "../config/db";
 
-export interface IActivityLog extends Document {
+export interface IActivityLog {
+  id?: number;
   userId?: string;
   action: string;
   meta?: Record<string, unknown>;
-  createdAt: Date;
+  created_at?: Date;
 }
 
-const ActivityLogSchema = new Schema<IActivityLog>(
-  {
-    userId: { type: String },
-    action: { type: String, required: true },
-    meta: { type: Schema.Types.Mixed },
-  },
-  { timestamps: true },
-);
+export const createActivityLog = async (data: IActivityLog) => {
+  const query = `
+    INSERT INTO activity_logs (user_id, action, meta)
+    VALUES ($1, $2, $3)
+    RETURNING *;
+  `;
 
-export const ActivityLog = model<IActivityLog>(
-  "ActivityLog",
-  ActivityLogSchema,
-);
+  const values = [
+    data.userId,
+    data.action,
+    data.meta ? JSON.stringify(data.meta) : null,
+  ];
+
+  const result = await db.query(query, values);
+
+  return result.rows[0];
+};

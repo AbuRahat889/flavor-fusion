@@ -1,9 +1,9 @@
+import { createActivityLog } from "@/models/ActivityLog";
 import { orderRepository } from "../repositories/order.repository";
 import { productRepository } from "../repositories/product.repository";
 import { ApiError } from "../utils/ApiError";
 import { OrderDTO } from "../validators/order.schema";
 import { OrderStatus } from "@prisma/client";
-import { ActivityLog } from "../models/ActivityLog";
 
 export const orderService = {
   list: () => orderRepository.list(),
@@ -22,7 +22,7 @@ export const orderService = {
       phone: dto.phone,
       address: dto.address,
       payment: dto.payment,
-      email:dto.email,
+      email: dto.email,
       total,
       ...(userId ? { user: { connect: { id: userId } } } : {}),
       items: {
@@ -35,7 +35,7 @@ export const orderService = {
       },
     });
 
-    await ActivityLog.create({
+    await createActivityLog({
       userId,
       action: "ORDER_CREATED",
       meta: { orderId: order.id, total },
