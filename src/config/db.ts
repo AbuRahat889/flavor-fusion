@@ -10,17 +10,11 @@
 //   console.log("[mongo] connected");
 // };
 
-// src/config/db.ts
-
-import { Pool } from "pg";
-
-export const db = new Pool({
-  connectionString: process.env.DATABASE_URL,
-});
+import { prisma } from "./prisma";
 
 export const connectDB = async () => {
   try {
-    await db.query("SELECT NOW()");
+    await prisma.$connect();
     console.log("[postgres] connected");
   } catch (error) {
     console.error("[postgres] connection failed", error);
