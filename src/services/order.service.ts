@@ -2,11 +2,11 @@ import { createActivityLog } from "@/models/ActivityLog";
 import { orderRepository } from "../repositories/order.repository";
 import { productRepository } from "../repositories/product.repository";
 import { ApiError } from "../utils/ApiError";
-import { OrderDTO } from "../validators/order.schema";
+import { OrderDTO, OrderListQuery } from "../validators/order.schema";
 import { OrderStatus } from "@prisma/client";
 
 export const orderService = {
-  list: () => orderRepository.list(),
+  list: (params: OrderListQuery) => orderRepository.list(params),
   create: async (dto: OrderDTO, userId?: string) => {
     const products = await Promise.all(
       dto.items.map(async (i) => {
