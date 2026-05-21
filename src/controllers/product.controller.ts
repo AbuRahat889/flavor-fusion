@@ -13,17 +13,23 @@ export const productController = {
     success(res, await productService.get(req.params.id));
   }),
   create: asyncHandler(async (req: Request, res: Response) => {
-    success(res, await productService.create(req.body), "Created", 201);
+    success(
+      res,
+      await productService.create(req.body),
+      "Product created successfully!",
+      201,
+    );
   }),
   update: asyncHandler(async (req: Request, res: Response) => {
     success(
       res,
       await productService.update(req.params.id, req.body),
-      "Updated",
+      "Product updated successfully!",
     );
   }),
   remove: asyncHandler(async (req: Request, res: Response) => {
     await productService.remove(req.params.id);
-    success(res, null, "Deleted");
+
+    success(res, null, "Product Deleted successfully!");
   }),
 };

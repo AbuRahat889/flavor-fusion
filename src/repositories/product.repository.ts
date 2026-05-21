@@ -40,5 +40,7 @@ export const productRepository = {
   create: (data: ProductDTO) => prisma.product.create({ data }),
   update: (id: string, data: Partial<ProductDTO>) =>
     prisma.product.update({ where: { id }, data }),
+  countOrderItems: (id: string) =>
+    prisma.orderItem.count({ where: { productId: id } }),
   remove: (id: string) => prisma.product.delete({ where: { id } }),
 };
