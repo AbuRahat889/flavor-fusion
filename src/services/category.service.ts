@@ -13,6 +13,15 @@ export const categoryService = {
   remove: async (id: string) => {
     const found = await categoryRepository.findById(id);
     if (!found) throw new ApiError(404, "Category not found");
+
+    const productCount = await categoryRepository.countProducts(id);
+    if (productCount > 0) {
+      throw new ApiError(
+        409,
+        "Category cannot be deleted because it contains products",
+      );
+    }
+
     return categoryRepository.remove(id);
   },
 };

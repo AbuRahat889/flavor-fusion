@@ -13,7 +13,7 @@ export const orderController = {
     success(
       res,
       await orderService.create(req.body, req.user?.id),
-      "Created",
+      "Order created successfully!",
       201,
     );
   }),
@@ -21,7 +21,7 @@ export const orderController = {
     success(
       res,
       await orderService.updateStatus(req.params.id, req.body.status),
-      "Updated",
+      "Order status updated successfully!",
     );
   }),
 };

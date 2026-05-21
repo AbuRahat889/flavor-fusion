@@ -8,17 +8,22 @@ export const categoryController = {
     success(res, await categoryService.list());
   }),
   create: asyncHandler(async (req: Request, res: Response) => {
-    success(res, await categoryService.create(req.body), "Created", 201);
+    success(
+      res,
+      await categoryService.create(req.body),
+      "Category created successfully!",
+      201,
+    );
   }),
   update: asyncHandler(async (req: Request, res: Response) => {
     success(
       res,
       await categoryService.update(req.params.id, req.body),
-      "Updated",
+      "Category updated successfully!",
     );
   }),
   remove: asyncHandler(async (req: Request, res: Response) => {
     await categoryService.remove(req.params.id);
-    success(res, null, "Deleted");
+    success(res, null, "Category deleted successfully!");
   }),
 };
