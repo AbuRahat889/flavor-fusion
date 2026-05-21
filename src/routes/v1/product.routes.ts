@@ -2,10 +2,13 @@ import { Router } from "express";
 import { productController } from "../../controllers/product.controller";
 import { requireAuth, requireRole } from "../../middlewares/auth";
 import { validate } from "../../middlewares/validate";
-import { productSchema } from "../../validators/product.schema";
+import {
+  productListQuerySchema,
+  productSchema,
+} from "../../validators/product.schema";
 
 const r = Router();
-r.get("/", productController.list);
+r.get("/", validate(productListQuerySchema, "query"), productController.list);
 r.get("/:id", productController.get);
 r.post(
   "/",

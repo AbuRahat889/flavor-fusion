@@ -1,9 +1,9 @@
 import { productRepository } from "../repositories/product.repository";
 import { ApiError } from "../utils/ApiError";
-import { ProductDTO } from "../validators/product.schema";
+import { ProductDTO, ProductListQuery } from "../validators/product.schema";
 
 export const productService = {
-  list: () => productRepository.list(),
+  list: (params: ProductListQuery) => productRepository.list(params),
   get: async (id: string) => {
     const p = await productRepository.findById(id);
     if (!p) throw new ApiError(404, "Product not found");

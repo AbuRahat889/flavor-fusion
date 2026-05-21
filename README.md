@@ -60,6 +60,9 @@ You can also run it manually: `npm run seed`.
 | POST   | /products               | admin    |
 | PUT    | /products/:id           | admin    |
 | DELETE | /products/:id           | admin    |
+
+`GET /products` accepts `categoryId`, `page`, and `limit` as query params and returns `{ items, meta }` for pagination.
+
 | POST   | /orders                 | public   |
 | GET    | /orders                 | admin    |
 | PATCH  | /orders/:id/status      | admin    |
