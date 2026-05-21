@@ -10,7 +10,7 @@ export const authController = {
   }),
   login: asyncHandler(async (req: Request, res: Response) => {
     const data = await authService.login(req.body);
-    success(res, data, "Logged in");
+    success(res, data, "Logged in successfully!");
   }),
   me: asyncHandler(async (req: Request, res: Response) => {
     const data = await authService.me(req.user!.id);

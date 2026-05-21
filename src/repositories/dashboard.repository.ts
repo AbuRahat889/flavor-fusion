@@ -15,7 +15,9 @@ export type DashboardOverview = {
   categories: number;
   totalItems: number;
   monthlyOrders: number;
+  monthlyRevenue: number;
   todaysOrders: number;
+  pendingOrders: number;
   recentOrders: RecentOrder[];
   categoryBreakdown: Array<{
     id: string;
@@ -47,14 +49,21 @@ export const dashboardRepository = {
       categories,
       totalItems,
       monthlyOrders,
+      monthlyRevenue,
       todaysOrders,
+      pendingOrders,
       recentOrders,
       categoryBreakdown,
     ] = await Promise.all([
       prisma.category.count(),
       prisma.product.count(),
       prisma.order.count({ where: { createdAt: { gte: startOfMonth } } }),
+      prisma.order.aggregate({
+        _sum: { total: true },
+        where: { createdAt: { gte: startOfMonth } },
+      }),
       prisma.order.count({ where: { createdAt: { gte: startOfDay } } }),
+      prisma.order.count({ where: { status: OrderStatus.PENDING } }),
       prisma.order.findMany({
         orderBy: { createdAt: "desc" },
         take: 5,
@@ -81,7 +90,9 @@ export const dashboardRepository = {
       categories,
       totalItems,
       monthlyOrders,
+      monthlyRevenue: monthlyRevenue._sum.total || 0,
       todaysOrders,
+      pendingOrders,
       recentOrders,
       categoryBreakdown: categoryBreakdown
         .map((category) => ({
