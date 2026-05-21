@@ -55,6 +55,7 @@ You can also run it manually: `npm run seed`.
 | POST   | /categories             | admin    |
 | PUT    | /categories/:id         | admin    |
 | DELETE | /categories/:id         | admin    |
+| GET    | /dashboard/overview     | admin    |
 | GET    | /products               | public   |
 | GET    | /products/:id           | public   |
 | POST   | /products               | admin    |
