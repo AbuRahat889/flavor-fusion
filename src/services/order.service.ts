@@ -1,4 +1,5 @@
-import { createActivityLog } from "@/models/ActivityLog";
+import { createActivityLog } from "../models/ActivityLog";
+// import { createActivityLog } from "@/models/ActivityLog";
 import { orderRepository } from "../repositories/order.repository";
 import { productRepository } from "../repositories/product.repository";
 import { ApiError } from "../utils/ApiError";

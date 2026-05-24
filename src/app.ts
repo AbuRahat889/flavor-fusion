@@ -30,6 +30,9 @@ export const createApp = (): Application => {
   app.use(env.apiPrefix, apiLimiter);
 
   app.use(env.apiPrefix, v1);
+  app.get("/", (_req, res) => {
+    res.send("🍔 Welcome to Flavor Fusion API! 🍔");
+  });
 
   app.use(notFound);
   app.use(errorHandler);
