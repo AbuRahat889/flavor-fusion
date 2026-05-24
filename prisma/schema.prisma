@@ -59,9 +59,9 @@ model Order {
   userId    String?
   user      User?       @relation(fields: [userId], references: [id])
   customer  String
-  phone     String?
+  phone     String
   email     String?
-  address   String?
+  address   String
   total     Float
   status    OrderStatus @default(PENDING)
   payment   String      @default("cod")
