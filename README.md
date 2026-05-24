@@ -1,86 +1,116 @@
 # Flavor Fusion — Backend (TypeScript)
 
-Production-ready Express + TypeScript backend using PostgreSQL (Prisma) and MongoDB (Mongoose), with JWT auth and role-based access.
+A production-ready Express + TypeScript backend for the Flavor Fusion app. It provides a clean, tested API with PostgreSQL (via Prisma) for primary data storage and MongoDB (via Mongoose) for activity logging. Built with security, observability and developer ergonomics in mind.
 
-## Stack
-- Node.js + Express 4
+**Key features**
+- Role-based JWT authentication (admin, user)
+- Prisma ORM for PostgreSQL with migrations
+- Mongoose for activity logs
+- Request validation with Zod
+- Production middleware: helmet, cors, rate limiting, compression, logging
+- Idempotent default admin seeding
+
+## Tech Stack
+- Node.js 18+ / Express 4
 - TypeScript 5 (strict)
-- Prisma ORM → PostgreSQL
-- Mongoose → MongoDB (activity logs)
-- JWT auth + bcrypt
-- Zod validation
-- helmet, cors, rate-limit, xss-clean, compression, morgan
+- PostgreSQL + Prisma
+- MongoDB + Mongoose
+- Zod, bcrypt, jsonwebtoken
 
-## Architecture
+## Project Layout
 ```
 src/
-├── config/         # env, prisma, mongo
-├── controllers/    # HTTP layer
+├── config/         # env, prisma client, mongo connection
+├── controllers/    # HTTP handlers
 ├── services/       # business logic
-├── repositories/   # data access (Prisma)
+├── repositories/   # Prisma data access
 ├── models/         # Mongoose schemas
-├── routes/v1/      # versioned routes
-├── middlewares/    # auth, error, validate, rate-limit
-├── validators/     # Zod schemas
-├── utils/          # response, jwt, asyncHandler, seed
+├── routes/v1/      # API routes
+├── middlewares/    # auth, error handling, rate-limit, validation
+├── validators/     # Zod request schemas
+├── utils/          # helpers: jwt, response, pagination, seed
 ├── app.ts          # express app factory
-└── server.ts       # entry
+└── server.ts       # process bootstrap
 ```
 
-## Setup
+## Quick Start
+1. Install dependencies
+
 ```bash
 npm install
-cp .env.example .env          # edit DATABASE_URL, MONGO_URI, JWT_SECRET
+```
+
+2. Copy and edit environment variables
+
+```bash
+cp .env.example .env
+# then edit DATABASE_URL, MONGO_URI, JWT_SECRET, and other values
+```
+
+3. Run database migrations and start (development)
+
+```bash
 npx prisma migrate dev --name init
 npm run dev
 ```
 
-## Default Admin
-On every server boot the default admin is created/promoted **idempotently**.
-Configure via `.env`:
-```
-DEFAULT_ADMIN_EMAIL=admin@flavor.com
-DEFAULT_ADMIN_PASSWORD=admin123
-DEFAULT_ADMIN_NAME=Super Admin
-```
-You can also run it manually: `npm run seed`.
+For a production build:
 
-## Endpoints — `/api/v1`
-| Method | Path                    | Auth     |
-|--------|-------------------------|----------|
-| POST   | /auth/register          | public   |
-| POST   | /auth/login             | public   |
-| GET    | /auth/me                | user     |
-| GET    | /categories             | public   |
-| POST   | /categories             | admin    |
-| PUT    | /categories/:id         | admin    |
-| DELETE | /categories/:id         | admin    |
-| GET    | /dashboard/overview     | admin    |
-| GET    | /products               | public   |
-| GET    | /products/:id           | public   |
-| POST   | /products               | admin    |
-| PUT    | /products/:id           | admin    |
-| DELETE | /products/:id           | admin    |
-
-`GET /products` accepts `categoryId`, `page`, and `limit` as query params and returns `{ items, meta }` for pagination.
-
-| POST   | /orders                 | public   |
-| GET    | /orders                 | admin    |
-| PATCH  | /orders/:id/status      | admin    |
-
-## Frontend integration
-In the Lovable React app set:
-```
-VITE_API_URL=http://localhost:5000/api/v1
-```
-Then replace the mock contexts (`MenuContext`, `OrderContext`, `CategoryContext`, `AdminAuthContext`) with `fetch` calls hitting these endpoints, persisting the JWT from `/auth/login` in `localStorage` and sending it as `Authorization: Bearer <token>`.
-
-## Push to GitHub
 ```bash
-git init
-git add .
-git commit -m "feat: typescript backend with default admin"
-git branch -M main
-git remote add origin <your-repo-url>
-git push -u origin main
+npm run build
+npm start
 ```
+
+## Environment Variables
+Set values in `.env` (see `.env.example`). Important keys:
+- `DATABASE_URL` — Postgres connection string
+- `MONGO_URI` — MongoDB connection string
+- `JWT_SECRET` — secret for signing tokens
+- `DEFAULT_ADMIN_EMAIL`, `DEFAULT_ADMIN_PASSWORD`, `DEFAULT_ADMIN_NAME` — used by the seed routine
+
+## Default Admin
+On startup the server will create or promote the default admin account idempotently. You can also run the seeder manually:
+
+```bash
+npm run seed
+```
+
+## API Overview — /api/v1
+Core endpoints (authentication, categories, products, orders, dashboard):
+
+- POST /auth/register — public
+- POST /auth/login — public
+- GET /auth/me — authenticated user
+- GET /categories — public
+- POST /categories — admin
+- PUT /categories/:id — admin
+- DELETE /categories/:id — admin
+- GET /products — public (supports `categoryId`, `page`, `limit`)
+- GET /products/:id — public
+- POST /products — admin
+- PUT /products/:id — admin
+- DELETE /products/:id — admin
+- POST /orders — public
+- GET /orders — admin
+- PATCH /orders/:id/status — admin
+
+For full API details and examples refer to the route handlers in the `src/routes/v1` folder.
+
+## Development Tips
+- Use `npm run dev` for hot-reloading during feature work.
+- Run Prisma Studio: `npx prisma studio` to inspect the database.
+- Activity logs are persisted to MongoDB — check `src/models/ActivityLog.ts`.
+
+## Contributing
+1. Fork the repo and create a feature branch.
+2. Follow existing TypeScript and linting conventions.
+3. Open a PR with a clear summary and testing instructions.
+
+## License
+MIT
+
+---
+
+If you'd like, I can also:
+- add a short API examples section, or
+- generate a small Postman/Insomnia collection for the endpoints.
